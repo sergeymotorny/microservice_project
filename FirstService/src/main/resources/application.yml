@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: first-service
+
+
+second:
+  service:
+    config:
+      url: http://localhost:8081
+
+logging:
+  level:
+    com.motorny.client: DEBUG
