@@ -1,27 +1,6 @@
 spring:
   application:
-    name: SecondService
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/db_for_microservice
-    username: postgres
-    password: postgres
-
-
-#  security:
-#    user:
-#      name: user
-#      password: password
+    name: second-service
 
 server:
   port: 8081
-
-logging:
-  level:
-    org.springframework.security.web: DEBUG
