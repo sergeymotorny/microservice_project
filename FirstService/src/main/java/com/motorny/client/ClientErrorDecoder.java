@@ -1,23 +1,18 @@
 package com.motorny.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.motorny.config.CustomFeignException;
-import com.motorny.config.ExceptionMessage;
-import com.motorny.exception.BadRequestException;
-import com.motorny.exception.NotFoundException;
+import com.motorny.exception.*;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
-public class ClientErrorDecoder implements ErrorDecoder {
-
-    private final ErrorDecoder errorDecoder = new Default();
+public class ClientErrorDecoder extends ErrorDecoder.Default {
 
     @Override
-    public Exception decode(String s, Response response) {
-
+    public Exception decode(String methodKey, Response response) {
         ExceptionMessage message;
 
         try (InputStream inputStream = response.body()
@@ -31,13 +26,23 @@ public class ClientErrorDecoder implements ErrorDecoder {
 
         switch (response.status()) {
             case 400:
-                return new BadRequestException(message.getMessage() != null ? message.getMessage() : "BadRequest!");
+                return new BadRequestException(
+                        Optional.ofNullable(message.message()).orElse("BadRequestException!")
+                );
+            case 401:
+                return new UnauthorizedException(
+                        Optional.ofNullable(message.message()).orElse("UnauthorizedException!")
+                );
             case 404:
-                return new NotFoundException(message.getMessage() != null ? message.getMessage() : "NotFound!");
+                return new NotFoundException(
+                        Optional.ofNullable(message.message()).orElse("NotFoundException!")
+                );
             case 500:
-                return new CustomFeignException(message.getMessage() != null ? message.getMessage() : "InternalServerError!");
+                return new CustomFeignException(
+                        Optional.ofNullable(message.message()).orElse("CustomFeignException!")
+                );
             default:
-                return errorDecoder.decode(s, response);
+                return super.decode(methodKey, response);
         }
     }
 }
