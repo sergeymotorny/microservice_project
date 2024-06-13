@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: FirstService
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/db_for_microservice
+    username: postgres
+    password: postgres
+
+  security:
+    user:
+      name: user
+      password: password
+
+second:
+  service:
+    config:
+      url: http://localhost:8081
+
