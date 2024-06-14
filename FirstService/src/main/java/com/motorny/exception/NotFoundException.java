@@ -1,6 +1,6 @@
 package com.motorny.exception;
 
-public class NotFoundException extends Exception {
+public class NotFoundException extends RuntimeException {
 
     public NotFoundException() {  }
 
@@ -14,6 +14,6 @@ public class NotFoundException extends Exception {
 
     @Override
     public String toString() {
-        return "NotFoundException: " + getMessage();
+        return "Not found exception: " + getMessage();
     }
 }

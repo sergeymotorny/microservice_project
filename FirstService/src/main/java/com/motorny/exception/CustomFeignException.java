@@ -1,13 +1,13 @@
-package com.motorny.config;
+package com.motorny.exception;
 
-public class CustomFeignException extends Exception {
-
-    public CustomFeignException() {
-        super();
-    }
+public class CustomFeignException extends RuntimeException {
 
     public CustomFeignException(String message) {
         super(message);
+    }
+
+    public CustomFeignException(Throwable cause) {
+        super(cause);
     }
 
     @Override
