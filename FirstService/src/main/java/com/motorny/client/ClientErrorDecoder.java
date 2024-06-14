@@ -18,6 +18,9 @@ public class ClientErrorDecoder extends ErrorDecoder.Default {
         try (InputStream inputStream = response.body()
                 .asInputStream()) {
 
+            //InputStream inputStream = response.body() != null ? response.body().asInputStream() : null
+            //InputStream inputStream = response.body().asInputStream()
+
             ObjectMapper mapper = new ObjectMapper();
             message = mapper.readValue(inputStream, ExceptionMessage.class);
         } catch (IOException e) {
