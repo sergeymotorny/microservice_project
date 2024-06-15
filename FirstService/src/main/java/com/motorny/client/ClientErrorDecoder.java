@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+
 public class ClientErrorDecoder extends ErrorDecoder.Default {
 
     @Override
@@ -30,29 +31,10 @@ public class ClientErrorDecoder extends ErrorDecoder.Default {
             }
         }
 
-        switch (response.status()) {
-            case 400 -> throw new BadRequestException(
-                    Optional.ofNullable(message.message()).orElse("BadRequestException!")
-            );
-            case 401 -> throw new UnauthorizedException(
-                    Optional.ofNullable(message.message()).orElse("UnauthorizedException!")
-            );
-            case 403 -> throw new ForbiddenException(
-                    Optional.ofNullable(message.message()).orElse("ForbiddenException!")
-            );
-            case 404 -> throw new NotFoundException(
-                    Optional.ofNullable(message.message()).orElse("NotFoundException!")
-            );
-            case 500 -> throw new CustomFeignException(
-                    Optional.ofNullable(message.message()).orElse("CustomFeignException!")
-            );
-            default -> {
-                return super.decode(methodKey, response);
-            }
-        }
+        return new CustomFeignException(Optional.ofNullable(message.message()).orElse("CustomFeignException!"));
     }
 
-    private static ExceptionMessage getExceptionMessage(String methodKey, Response response) {
+    private ExceptionMessage getExceptionMessage(String methodKey, Response response) {
         ExceptionMessage message;
         message = new ExceptionMessage(
                 LocalDateTime.now().toString(),

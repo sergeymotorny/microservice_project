@@ -23,35 +23,19 @@ import java.util.Collections;
 public class SecurityConfig {
 
     @Autowired
-    private final RequestHeaderAuthenticationProvider requestHeaderAuthenticationProvider;
+    private final AuthenticationFilter authenticationFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
-                .addFilterAfter(requestHeaderAuthenticationFilter(), HeaderWriterFilter.class)
-                .authorizeHttpRequests(matcherRegistry ->
-                        matcherRegistry
-                                .requestMatchers("/api/**").authenticated())
+                .addFilterBefore(authenticationFilter, HeaderWriterFilter.class)
+                .authorizeHttpRequests(request -> request.anyRequest()
+                        .permitAll())
                 .exceptionHandling(httpExceptionHandling -> httpExceptionHandling
                         .authenticationEntryPoint((request, response, authException) ->
                                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
                 .build();
-    }
-
-    @Bean
-    public RequestHeaderAuthenticationFilter requestHeaderAuthenticationFilter() {
-        RequestHeaderAuthenticationFilter filter = new RequestHeaderAuthenticationFilter();
-        filter.setPrincipalRequestHeader("auth");
-        filter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/**"));
-        filter.setAuthenticationManager(authenticationManager());
-
-        return filter;
-    }
-
-    @Bean
-    protected AuthenticationManager authenticationManager() {
-        return new ProviderManager(Collections.singletonList(requestHeaderAuthenticationProvider));
     }
 }

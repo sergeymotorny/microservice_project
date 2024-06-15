@@ -13,5 +13,5 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface FirstServiceClient {
 
     @GetMapping("/api/hello-world")
-    String getHelloWorld(@RequestHeader(defaultValue = "auth") String auth);
+    String getHelloWorld(@RequestHeader() String auth);
 }
