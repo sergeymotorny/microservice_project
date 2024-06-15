@@ -7,7 +7,9 @@ import feign.codec.ErrorDecoder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Optional;
+
 
 public class ClientErrorDecoder extends ErrorDecoder.Default {
 
@@ -15,34 +17,31 @@ public class ClientErrorDecoder extends ErrorDecoder.Default {
     public Exception decode(String methodKey, Response response) {
         ExceptionMessage message;
 
-        try (InputStream inputStream = response.body()
-                .asInputStream()) {
+        if (response.body() == null) {
+            message = getExceptionMessage(methodKey, response);
 
-            ObjectMapper mapper = new ObjectMapper();
-            message = mapper.readValue(inputStream, ExceptionMessage.class);
-        } catch (IOException e) {
-            return new Exception(e.getMessage());
+        } else {
+            try (InputStream inputStream = response.body()
+                    .asInputStream()) {
+
+                ObjectMapper mapper = new ObjectMapper();
+                message = mapper.readValue(inputStream, ExceptionMessage.class);
+            } catch (IOException e) {
+                return new Exception(e.getMessage());
+            }
         }
 
-        switch (response.status()) {
-            case 400:
-                return new BadRequestException(
-                        Optional.ofNullable(message.message()).orElse("BadRequestException!")
-                );
-            case 401:
-                return new UnauthorizedException(
-                        Optional.ofNullable(message.message()).orElse("UnauthorizedException!")
-                );
-            case 404:
-                return new NotFoundException(
-                        Optional.ofNullable(message.message()).orElse("NotFoundException!")
-                );
-            case 500:
-                return new CustomFeignException(
-                        Optional.ofNullable(message.message()).orElse("CustomFeignException!")
-                );
-            default:
-                return super.decode(methodKey, response);
-        }
+        return new CustomFeignException(Optional.ofNullable(message.message()).orElse("CustomFeignException!"));
+    }
+
+    private ExceptionMessage getExceptionMessage(String methodKey, Response response) {
+        ExceptionMessage message;
+        message = new ExceptionMessage(
+                LocalDateTime.now().toString(),
+                response.status(),
+                methodKey,
+                response.status() + ", " + methodKey,
+                response.toString());
+        return message;
     }
 }

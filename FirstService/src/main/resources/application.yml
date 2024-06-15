@@ -10,4 +10,4 @@ second:
 
 logging:
   level:
-    com.motorny.client: DEBUG
+    org.springframework.security: DEBUG
