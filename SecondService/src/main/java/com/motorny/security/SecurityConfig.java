@@ -5,13 +5,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 import org.springframework.security.web.header.HeaderWriterFilter;
@@ -35,7 +33,6 @@ public class SecurityConfig {
                 .addFilterAfter(requestHeaderAuthenticationFilter(), HeaderWriterFilter.class)
                 .authorizeHttpRequests(matcherRegistry ->
                         matcherRegistry
-                                //.requestMatchers(HttpMethod.GET, "/hello-world").permitAll()
                                 .requestMatchers("/api/**").authenticated())
                 .exceptionHandling(httpExceptionHandling -> httpExceptionHandling
                         .authenticationEntryPoint((request, response, authException) ->

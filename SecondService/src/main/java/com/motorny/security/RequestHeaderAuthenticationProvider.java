@@ -25,10 +25,8 @@ public class RequestHeaderAuthenticationProvider implements AuthenticationProvid
             throw new BadCredentialsException("Bad Request Header Credentials!");
         }
 
-
-        // todo: переделать, убрав null
         return new PreAuthenticatedAuthenticationToken(
-                authentication.getPrincipal(), null, new ArrayList<>()
+                authentication.getPrincipal(), "", new ArrayList<>()
         );
     }
 
