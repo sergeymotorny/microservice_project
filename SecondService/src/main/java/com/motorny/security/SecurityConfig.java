@@ -32,8 +32,6 @@ public class SecurityConfig {
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(managementConfigurer ->
-                        managementConfigurer.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .addFilterAfter(requestHeaderAuthenticationFilter(), HeaderWriterFilter.class)
                 .authorizeHttpRequests(matcherRegistry ->
                         matcherRegistry

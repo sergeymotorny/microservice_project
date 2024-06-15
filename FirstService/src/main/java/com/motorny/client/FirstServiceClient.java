@@ -3,7 +3,7 @@ package com.motorny.client;
 import com.motorny.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(
         name = "second-service",
@@ -12,6 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 )
 public interface FirstServiceClient {
 
-    @GetMapping("/hello-world")
-    String getHelloWorld();
+    @GetMapping("/api/hello-world")
+    String getHelloWorld(@RequestHeader("auth") String authHeader);
 }

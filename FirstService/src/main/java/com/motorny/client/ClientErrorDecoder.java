@@ -7,6 +7,7 @@ import feign.codec.ErrorDecoder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class ClientErrorDecoder extends ErrorDecoder.Default {
@@ -15,16 +16,25 @@ public class ClientErrorDecoder extends ErrorDecoder.Default {
     public Exception decode(String methodKey, Response response) {
         ExceptionMessage message;
 
-        try (InputStream inputStream = response.body()
-                .asInputStream()) {
+        if (response.body() == null) {
+            message = new ExceptionMessage(
+                    LocalDateTime.now().toString(),
+                    response.status(),
+                    methodKey,
+                    response.status() + ", " + methodKey,
+                    response.toString());
 
-            //InputStream inputStream = response.body() != null ? response.body().asInputStream() : null
-            //InputStream inputStream = response.body().asInputStream()
+        } else {
+            try (InputStream inputStream = response.body()
+                    .asInputStream()) {
 
-            ObjectMapper mapper = new ObjectMapper();
-            message = mapper.readValue(inputStream, ExceptionMessage.class);
-        } catch (IOException e) {
-            return new Exception(e.getMessage());
+                //Optional.ofNullable(response.body()).orElseGet(() -> )
+
+                ObjectMapper mapper = new ObjectMapper();
+                message = mapper.readValue(inputStream, ExceptionMessage.class);
+            } catch (IOException e) {
+                return new Exception(e.getMessage());
+            }
         }
 
         switch (response.status()) {
