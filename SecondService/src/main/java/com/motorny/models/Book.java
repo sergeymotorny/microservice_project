@@ -1,15 +1,14 @@
 package com.motorny.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,5 +27,30 @@ public class Book {
     private Integer pages;
 
     @ManyToMany(mappedBy = "books")
-    private Set<User> user = new HashSet<>();
+
+    private Set<User> users = new HashSet<>();
+
+    public void addUser(User user) {
+        this.users.add(user);
+        user.getBooks().add(this);
+    }
+
+    public void removeUser(User user) {
+        this.users.remove(user);
+        user.getBooks().remove(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book book)) return false;
+        return Objects.equals(id, book.id)
+                && Objects.equals(title, book.title)
+                && Objects.equals(pages, book.pages);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, pages);
+    }
 }

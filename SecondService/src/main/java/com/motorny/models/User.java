@@ -1,15 +1,14 @@
 package com.motorny.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,18 +29,34 @@ public class User {
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "record",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+            // todo: что делает "referencedColumnName = "id" в joinColumns и inverseJoinColumns?
     )
+
     private Set<Book> books = new HashSet<>();
 
     public void addBook(Book book) {
         this.books.add(book);
-        book.getUser().add(this);
+        book.getUsers().add(this);
     }
 
     public void removeBook(Book book) {
         this.books.remove(book);
-        book.getUser().remove(this);
+        book.getUsers().remove(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User user)) return false;
+        return Objects.equals(id, user.id)
+                && Objects.equals(fullName, user.fullName)
+                && Objects.equals(age, user.age);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, fullName, age);
     }
 }

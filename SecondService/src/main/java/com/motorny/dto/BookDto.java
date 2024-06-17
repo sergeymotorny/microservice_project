@@ -3,6 +3,8 @@ package com.motorny.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Builder
 public class BookDto {
@@ -10,5 +12,5 @@ public class BookDto {
     private Long id;
     private String title;
     private Integer pages;
-    private Long userId;
+    private Set<Long> userId;
 }

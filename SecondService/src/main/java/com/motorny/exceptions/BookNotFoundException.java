@@ -5,14 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class UserNotFoundException extends DataAccessException {
+public class BookNotFoundException extends DataAccessException {
 
-    public UserNotFoundException(String msg) {
+    public BookNotFoundException(String msg) {
         super(msg);
-    }
-
-    public UserNotFoundException(String msg, Throwable cause) {
-        super(msg, cause);
     }
 
     @Override

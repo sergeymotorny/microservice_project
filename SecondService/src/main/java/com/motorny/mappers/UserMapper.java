@@ -4,7 +4,7 @@ import com.motorny.dto.UserDto;
 import com.motorny.models.User;
 import org.mapstruct.Mapper;
 
-@Mapper(config = MapStructConfig.class)
+@Mapper(config = MapStructConfig.class, uses = BookMapper.class)
 public interface UserMapper {
     UserDto toUserDto(User user);
 

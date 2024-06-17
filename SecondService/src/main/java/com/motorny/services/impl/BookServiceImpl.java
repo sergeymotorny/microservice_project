@@ -1,10 +1,13 @@
 package com.motorny.services.impl;
 
 import com.motorny.dto.BookDto;
+import com.motorny.exceptions.BookNotFoundException;
 import com.motorny.exceptions.UserNotFoundException;
 import com.motorny.mappers.BookMapper;
 import com.motorny.models.Book;
+import com.motorny.models.User;
 import com.motorny.repositories.BookRepository;
+import com.motorny.repositories.UserRepository;
 import com.motorny.services.BookService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
+    private final UserRepository userRepository;
     private final BookMapper bookMapper;
 
     @Override
@@ -32,15 +36,21 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto getBook(Long id) {
         Book foundBook = bookRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Book with " + id + " was not found!"));
+                .orElseThrow(() -> new BookNotFoundException("Book with " + id + " was not found!"));
 
         return bookMapper.toBookDto(foundBook);
     }
 
     @Transactional
     @Override
-    public BookDto createBook(BookDto bookDto) {
+    public BookDto createBook(BookDto bookDto, Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Unable to get user for book"));
+
         Book book = bookMapper.toBook(bookDto);
+
+        book.addUser(user);
+
         Book saveBook = bookRepository.save(book);
         return bookMapper.toBookDto(saveBook);
     }
@@ -55,7 +65,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String deleteBook(Long id) {
         Book foundBook = bookRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Book with " + id + " was not found!"));
+                .orElseThrow(() -> new BookNotFoundException("Book with " + id + " was not found!"));
 
         bookRepository.delete(foundBook);
 

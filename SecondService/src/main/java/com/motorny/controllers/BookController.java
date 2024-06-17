@@ -26,10 +26,10 @@ public class BookController {
         return bookService.getBook(id);
     }
 
-    @PostMapping("/book")
+    @PostMapping("/book/{userId}")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public BookDto createBook(@Valid @RequestBody BookDto bookDto) {
-        return bookService.createBook(bookDto);
+    public BookDto createBook(@Valid @RequestBody BookDto bookDto, @PathVariable("userId") Long userId) {
+        return bookService.createBook(bookDto, userId);
     }
 
     @PutMapping("/book/{id}")
