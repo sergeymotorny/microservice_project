@@ -13,7 +13,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -59,12 +61,6 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookDto updateBook(BookDto bookDto, Long id) {
-        return null;
-    }
-
-    @Transactional
-    @Override
     public String deleteBook(Long id) {
         Book foundBook = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Book with " + id + " was not found!"));
@@ -72,5 +68,35 @@ public class BookServiceImpl implements BookService {
         bookRepository.delete(foundBook);
 
         return "Book with " + id + " successfully deleted!";
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllBooksByUserId(Long id) {
+        List<Object[]> allBooksByUserId = bookRepository.findAllBooksByUserId(id);
+
+        return allBooksByUserId.stream()
+                .map(objects -> {
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("user", objects[0]);
+                    item.put("title", objects[1]);
+                    return item;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Map<String, Object>> getPopularBooksForReadersUnderAge10(Integer age, Integer outputLimit) {
+        List<Object[]> booksForReadersUnder10 =
+                bookRepository.findTop3MostPopularBooksForReadersUnder10(age, outputLimit);
+
+        return booksForReadersUnder10.stream()
+                .map(objects -> {
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("user", objects[0]);
+                    item.put("age", objects[1]);
+                    item.put("popularity_book", objects[2]);
+                    return item;
+                })
+                .collect(Collectors.toList());
     }
 }
