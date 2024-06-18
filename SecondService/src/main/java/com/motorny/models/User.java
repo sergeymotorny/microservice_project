@@ -31,9 +31,7 @@ public class User {
             name = "record",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
-            // todo: что делает "referencedColumnName = "id" в joinColumns и inverseJoinColumns?
     )
-
     private Set<Book> books = new HashSet<>();
 
     public void addBook(Book book) {

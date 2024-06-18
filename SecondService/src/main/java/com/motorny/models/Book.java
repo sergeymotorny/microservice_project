@@ -27,7 +27,6 @@ public class Book {
     private Integer pages;
 
     @ManyToMany(mappedBy = "books")
-
     private Set<User> users = new HashSet<>();
 
     public void addUser(User user) {

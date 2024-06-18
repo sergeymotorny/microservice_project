@@ -50,8 +50,10 @@ public class BookServiceImpl implements BookService {
         Book book = bookMapper.toBook(bookDto);
 
         book.addUser(user);
+        user.addBook(book);
 
         Book saveBook = bookRepository.save(book);
+
         return bookMapper.toBookDto(saveBook);
     }
 

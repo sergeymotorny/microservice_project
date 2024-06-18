@@ -26,9 +26,9 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(authenticationFilter, HeaderWriterFilter.class)
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/**").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
+//                        .requestMatchers("/api/**").permitAll()
+//                        .anyRequest().authenticated())
                 .exceptionHandling(httpExceptionHandling -> httpExceptionHandling
                         .authenticationEntryPoint((request, response, authException) ->
                                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))

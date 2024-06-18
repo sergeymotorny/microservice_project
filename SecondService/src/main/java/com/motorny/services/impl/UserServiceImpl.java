@@ -3,6 +3,7 @@ package com.motorny.services.impl;
 import com.motorny.dto.UserDto;
 import com.motorny.exceptions.UserNotFoundException;
 import com.motorny.mappers.UserMapper;
+import com.motorny.models.Book;
 import com.motorny.models.User;
 import com.motorny.repositories.UserRepository;
 import com.motorny.services.UserService;
