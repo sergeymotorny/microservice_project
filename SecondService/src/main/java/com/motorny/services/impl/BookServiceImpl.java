@@ -6,10 +6,13 @@ import com.motorny.exceptions.UserNotFoundException;
 import com.motorny.mappers.BookMapper;
 import com.motorny.models.Book;
 import com.motorny.models.User;
+import com.motorny.models.projection.BookProjection;
 import com.motorny.repositories.BookRepository;
 import com.motorny.repositories.UserRepository;
 import com.motorny.services.BookService;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
+import org.hibernate.query.spi.Limit;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,13 +75,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Map<String, Object>> getAllBooksByUserId(Long id) {
-        List<Object[]> allBooksByUserId = bookRepository.findAllBooksByUserId(id);
+        List<BookProjection> allBooksByUserId = bookRepository.findAllBooksByUserId(id);
 
         return allBooksByUserId.stream()
-                .map(objects -> {
+                .map(book -> {
                     Map<String, Object> item = new HashMap<>();
-                    item.put("user", objects[0]);
-                    item.put("title", objects[1]);
+
+                    item.put("user", book.getFullName());
+                    item.put("title", book.getTitle());
                     return item;
                 })
                 .collect(Collectors.toList());
