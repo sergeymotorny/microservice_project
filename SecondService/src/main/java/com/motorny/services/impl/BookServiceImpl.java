@@ -1,6 +1,7 @@
 package com.motorny.services.impl;
 
 import com.motorny.dto.BookDto;
+import com.motorny.dto.BookProjectionDto;
 import com.motorny.exceptions.BookNotFoundException;
 import com.motorny.exceptions.UserNotFoundException;
 import com.motorny.mappers.BookMapper;
@@ -8,11 +9,12 @@ import com.motorny.models.Book;
 import com.motorny.models.User;
 import com.motorny.models.projection.BookProjection;
 import com.motorny.repositories.BookRepository;
+import com.motorny.repositories.CustomBookRepository;
 import com.motorny.repositories.UserRepository;
 import com.motorny.services.BookService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
-import org.hibernate.query.spi.Limit;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +25,14 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
-public class BookServiceImpl implements BookService {
+public class BookServiceImpl implements BookService, CustomBookRepository {
 
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final BookMapper bookMapper;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public List<BookDto> getAllBook() {
@@ -73,6 +78,8 @@ public class BookServiceImpl implements BookService {
         return "Book with " + id + " successfully deleted!";
     }
 
+    // todo: переделать возвращаемое значение!!!
+    // todo: переделать возвращаемое значение!!!
     @Override
     public List<Map<String, Object>> getAllBooksByUserId(Long id) {
         List<BookProjection> allBooksByUserId = bookRepository.findAllBooksByUserId(id);
@@ -89,18 +96,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Map<String, Object>> getPopularBooksForReadersUnderAge10(Integer age, Integer outputLimit) {
-        List<Object[]> booksForReadersUnder10 =
-                bookRepository.findTop3MostPopularBooksForReadersUnder10(age, outputLimit);
+    public List<BookProjectionDto> findMostPopularBooksForReadersUnderAge(Integer age, Integer outputLimit) {
 
-        return booksForReadersUnder10.stream()
-                .map(objects -> {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("user", objects[0]);
-                    item.put("age", objects[1]);
-                    item.put("popularity_book", objects[2]);
-                    return item;
-                })
+        @SuppressWarnings("unchecked")
+        List<BookProjection> resultList = entityManager
+                .createNamedQuery("BookProjection.findBooksForUserUnderAge")
+                .setParameter(1, age)
+                .setParameter(2, outputLimit)
+                .getResultList();
+
+        return resultList.stream()
+                .map(bookMapper::toBookProjectionDto)
                 .collect(Collectors.toList());
     }
 }

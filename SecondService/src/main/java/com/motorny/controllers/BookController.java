@@ -1,7 +1,10 @@
 package com.motorny.controllers;
 
 import com.motorny.dto.BookDto;
+import com.motorny.dto.BookProjectionDto;
+import com.motorny.models.projection.BookProjection;
 import com.motorny.services.BookService;
+import com.motorny.services.impl.BookServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,7 @@ import java.util.Map;
 public class BookController {
 
     private final BookService bookService;
+    private final BookServiceImpl bookServiceImpl;
 
     @GetMapping("/books")
     public List<BookDto> getAllBooks() {
@@ -44,9 +48,15 @@ public class BookController {
         return bookService.getAllBooksByUserId(userId);
     }
 
-    @GetMapping("/book")
-    public List<Map<String, Object>> getPopularBooksForReaders(@RequestParam Integer age,
-                                                               @RequestParam Integer limit) {
-        return bookService.getPopularBooksForReadersUnderAge10(age, limit);
+//    @GetMapping("/book")
+//    public List<Map<String, Object>> getPopularBooksForReaders(@RequestParam Integer age,
+//                                                               @RequestParam Integer limit) {
+//        return null;
+//    }
+
+    @GetMapping("/book/populars")
+    public List<BookProjectionDto> getPopularBooksForReaders(@RequestParam Integer age,
+                                                             @RequestParam Integer limit) {
+        return bookServiceImpl.findMostPopularBooksForReadersUnderAge(age, limit);
     }
 }
