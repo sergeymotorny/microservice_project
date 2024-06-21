@@ -78,20 +78,13 @@ public class BookServiceImpl implements BookService, CustomBookRepository {
         return "Book with " + id + " successfully deleted!";
     }
 
-    // todo: переделать возвращаемое значение!!!
-    // todo: переделать возвращаемое значение!!!
+
     @Override
-    public List<Map<String, Object>> getAllBooksByUserId(Long id) {
+    public List<BookProjectionDto> getAllBooksByUserId(Long id) {
         List<BookProjection> allBooksByUserId = bookRepository.findAllBooksByUserId(id);
 
         return allBooksByUserId.stream()
-                .map(book -> {
-                    Map<String, Object> item = new HashMap<>();
-
-                    item.put("user", book.getFullName());
-                    item.put("title", book.getTitle());
-                    return item;
-                })
+                .map(bookMapper::toBookProjectionDto)
                 .collect(Collectors.toList());
     }
 

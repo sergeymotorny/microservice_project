@@ -2,7 +2,6 @@ package com.motorny.controllers;
 
 import com.motorny.dto.BookDto;
 import com.motorny.dto.BookProjectionDto;
-import com.motorny.models.projection.BookProjection;
 import com.motorny.services.BookService;
 import com.motorny.services.impl.BookServiceImpl;
 import jakarta.validation.Valid;
@@ -11,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -44,15 +42,9 @@ public class BookController {
     }
 
     @GetMapping("/book/user/{userId}")
-    public List<Map<String, Object>> getBooksByUserId(@PathVariable("userId") Long userId) {
+    public List<BookProjectionDto> getBooksByUserId(@PathVariable("userId") Long userId) {
         return bookService.getAllBooksByUserId(userId);
     }
-
-//    @GetMapping("/book")
-//    public List<Map<String, Object>> getPopularBooksForReaders(@RequestParam Integer age,
-//                                                               @RequestParam Integer limit) {
-//        return null;
-//    }
 
     @GetMapping("/book/populars")
     public List<BookProjectionDto> getPopularBooksForReaders(@RequestParam Integer age,
