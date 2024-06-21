@@ -11,6 +11,7 @@ import lombok.Setter;
 @Builder
 public class BookProjectionDto {
 
+    private Long id;
     private String fullName;
     private String title;
     private String age;
