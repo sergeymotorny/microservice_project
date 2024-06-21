@@ -1,15 +1,15 @@
 package com.motorny.services;
 
 import com.motorny.dto.BookDto;
-import com.motorny.dto.BookProjectionDto;
+import com.motorny.dto.PopularBookViewDto;
+import com.motorny.dto.TitleBookViewDto;
+import com.motorny.models.projection.TitleBookView;
 
 import java.util.List;
 
 public interface BookService {
     List<BookDto> getAllBook();
-    BookDto getBook(Long id);
     BookDto createBook(BookDto bookDto, Long id);
     String deleteBook(Long id);
-    List<BookProjectionDto> getAllBooksByUserId(Long id);
-    //List<BookProjectionDto> getPopularBooksForReadersUnderAge(String fullName, String title, Integer age);
+    List<TitleBookViewDto> getAllBooksByUserId(Long id);
 }

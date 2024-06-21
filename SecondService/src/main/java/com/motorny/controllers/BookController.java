@@ -1,9 +1,10 @@
 package com.motorny.controllers;
 
 import com.motorny.dto.BookDto;
-import com.motorny.dto.BookProjectionDto;
+import com.motorny.dto.PopularBookViewDto;
+import com.motorny.dto.TitleBookViewDto;
 import com.motorny.services.BookService;
-import com.motorny.services.impl.BookServiceImpl;
+import com.motorny.services.impl.CustomBookRepositoryImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,16 +18,11 @@ import java.util.List;
 public class BookController {
 
     private final BookService bookService;
-    private final BookServiceImpl bookServiceImpl;
+    private final CustomBookRepositoryImpl customBookRepository;
 
     @GetMapping("/books")
     public List<BookDto> getAllBooks() {
         return bookService.getAllBook();
-    }
-
-    @GetMapping("/book/{id}")
-    public BookDto getBook(@PathVariable("id") Long id) {
-        return bookService.getBook(id);
     }
 
     @PostMapping("/book/{userId}")
@@ -42,13 +38,13 @@ public class BookController {
     }
 
     @GetMapping("/book/user/{userId}")
-    public List<BookProjectionDto> getBooksByUserId(@PathVariable("userId") Long userId) {
+    public List<TitleBookViewDto> getBooksByUserId(@PathVariable("userId") Long userId) {
         return bookService.getAllBooksByUserId(userId);
     }
 
-    @GetMapping("/book/populars")
-    public List<BookProjectionDto> getPopularBooksForReaders(@RequestParam Integer age,
-                                                             @RequestParam Integer limit) {
-        return bookServiceImpl.findMostPopularBooksForReadersUnderAge(age, limit);
+    @GetMapping("/popular/books")
+    public List<PopularBookViewDto> getPopularBooksForReaders(@RequestParam Integer age,
+                                                              @RequestParam Integer limit) {
+        return customBookRepository.findMostPopularBooksForReadersUnderAge(age, limit);
     }
 }

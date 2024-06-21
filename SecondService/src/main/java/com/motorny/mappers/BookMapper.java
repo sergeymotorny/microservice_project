@@ -1,10 +1,12 @@
 package com.motorny.mappers;
 
 import com.motorny.dto.BookDto;
-import com.motorny.dto.BookProjectionDto;
+import com.motorny.dto.PopularBookViewDto;
+import com.motorny.dto.TitleBookViewDto;
 import com.motorny.models.Book;
 import com.motorny.models.User;
-import com.motorny.models.projection.BookProjection;
+import com.motorny.models.projection.PopularBookView;
+import com.motorny.models.projection.TitleBookView;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -21,9 +23,13 @@ public interface BookMapper {
     @Mapping(target = "users", source = "userId")
     Book toBook(BookDto bookDto);
 
-    BookProjectionDto toBookProjectionDto(BookProjection bookProjection);
+    PopularBookViewDto toPopularBookViewDto(PopularBookView popularBookView);
 
-    BookProjection toBookProjection(BookProjectionDto bookProjectionDto);
+    PopularBookView toPopularBookView(PopularBookViewDto popularBookViewDto);
+
+    TitleBookViewDto toTitleBookViewDto(TitleBookView titleBookView);
+
+    TitleBookView toTitleBookView(TitleBookViewDto toTitleBookViewDto);
 
     default Set<Long> mapUserToUserId(Set<User> users) {
         return users.stream()

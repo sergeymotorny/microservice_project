@@ -1,15 +1,10 @@
 package com.motorny.repositories;
 
-import com.motorny.dto.BookProjectionDto;
-import com.motorny.models.projection.BookProjection;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import com.motorny.dto.PopularBookViewDto;
 
 import java.util.List;
 
-@Repository
 public interface CustomBookRepository {
 
-    List<BookProjectionDto> findMostPopularBooksForReadersUnderAge(@Param("age") Integer age,
-                                                                   @Param("outputLimit") Integer outputLimit);
+    List<PopularBookViewDto> findMostPopularBooksForReadersUnderAge(Integer age, Integer outputLimit);
 }

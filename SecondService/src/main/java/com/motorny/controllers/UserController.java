@@ -21,11 +21,6 @@ public class UserController {
         return userService.getAllUser();
     }
 
-    @GetMapping("/user/{id}")
-    public UserDto getUser(@PathVariable("id") Long id) {
-        return userService.getUser(id);
-    }
-
     @PostMapping("/user")
     @ResponseStatus(value = HttpStatus.CREATED)
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {

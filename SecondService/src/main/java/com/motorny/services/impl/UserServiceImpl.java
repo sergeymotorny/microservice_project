@@ -29,14 +29,6 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public UserDto getUser(Long id) {
-        User foundUser = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User with " + id + " was not found!"));
-
-        return userMapper.toUserDto(foundUser);
-    }
-
     @Transactional
     @Override
     public UserDto createUser(UserDto userDto) {
