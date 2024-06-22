@@ -1,17 +1,14 @@
 package com.motorny.repositories;
 
 import com.motorny.models.Book;
-import com.motorny.models.projection.PopularBookView;
 import com.motorny.models.projection.TitleBookView;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, Long>, BookRepositoryCustom {
 
     @Query(value = """
         SELECT NEW com.motorny.models.projection.TitleBookView(

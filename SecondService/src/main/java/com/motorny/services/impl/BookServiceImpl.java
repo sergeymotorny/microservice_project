@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -30,11 +29,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> getAllBook() {
-        List<Book> books = bookRepository.findAll();
 
-        return books.stream()
+        return bookRepository.findAll().stream()
                 .map(bookMapper::toBookDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
@@ -71,6 +69,17 @@ public class BookServiceImpl implements BookService {
 
         return allBooksByUserId.stream()
                 .map(bookMapper::toTitleBookViewDto)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @Override
+    public List<PopularBookViewDto> getPopularBooksByAge(Integer age, Integer limit) {
+
+        List<PopularBookView> popularBooks =
+                bookRepository.mostPopularBooksForReadersUnderAge(age, limit);
+
+        return popularBooks.stream()
+                .map(bookMapper::toPopularBookViewDto)
+                .toList();
     }
 }

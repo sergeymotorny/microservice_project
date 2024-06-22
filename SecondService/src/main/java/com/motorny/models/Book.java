@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @NamedNativeQuery(
-        name = "BookProjection.findBooksForUserUnderAge",
+        name = "PopularBookView.findBooksForUserUnderAge",
         query = """
                 SELECT u.full_name fullName, b.title, u.age
                     FROM Book b
