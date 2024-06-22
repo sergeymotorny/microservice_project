@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -22,11 +21,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUser() {
-        List<User> users = userRepository.findAll();
 
-        return users.stream()
+        return userRepository.findAll().stream()
                 .map(userMapper::toUserDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional

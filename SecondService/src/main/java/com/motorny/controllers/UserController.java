@@ -21,19 +21,19 @@ public class UserController {
         return userService.getAllUser();
     }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     @ResponseStatus(value = HttpStatus.CREATED)
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {
         return userService.createUser(userDto);
     }
 
-    @PutMapping("/user/{id}")
+    @PutMapping("/users/{id}")
     public UserDto updateUser(@Valid @RequestBody UserDto userDto,
                               @PathVariable("id") Long id) {
         return userService.updateUser(userDto, id);
     }
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/users/{id}")
     @ResponseStatus(value = HttpStatus.OK)
     public String deleteUser(@PathVariable("id") Long id) {
         return userService.deleteUser(id);

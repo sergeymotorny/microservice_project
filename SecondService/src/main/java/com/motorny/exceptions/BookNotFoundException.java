@@ -10,14 +10,4 @@ public class BookNotFoundException extends DataAccessException {
     public BookNotFoundException(String msg) {
         super(msg);
     }
-
-    @Override
-    public String getMessage() {
-        return super.getMessage();
-    }
-
-    @Override
-    public synchronized Throwable getCause() {
-        return super.getCause();
-    }
 }
