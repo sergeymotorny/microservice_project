@@ -2,17 +2,26 @@ spring:
   application:
     name: second-service
 
-  security:
-    user:
-      name: user
-      password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/db_for_microservice
+    username: postgres
+    password: postgres
+
+  # disable basic auth
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
 
 server:
   port: 8081
 
 auth:
   secret: let_me_in
-
 
 logging:
   level:
