@@ -1,7 +1,7 @@
 package com.motorny.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.motorny.exception.*;
+import com.motorny.exceptions.*;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 
@@ -31,7 +31,8 @@ public class ClientErrorDecoder extends ErrorDecoder.Default {
             }
         }
 
-        return new CustomFeignException(Optional.ofNullable(message.message()).orElse("CustomFeignException!"));
+        return new CustomFeignException(Optional.ofNullable(message.message())
+                .orElse("CustomFeignException!"));
     }
 
     private ExceptionMessage getExceptionMessage(String methodKey, Response response) {
