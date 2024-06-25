@@ -1,10 +1,8 @@
 package com.motorny.controllers;
 
-import com.motorny.client.FirstServiceClient;
 import com.motorny.dto.UserDto;
 import com.motorny.services.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
