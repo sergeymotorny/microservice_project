@@ -3,6 +3,8 @@ package com.motorny.models;
 import com.motorny.models.projection.PopularBookView;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -57,6 +59,7 @@ public class Book {
     private Integer pages;
 
     @ManyToMany(mappedBy = "books")
+    @Fetch(FetchMode.SUBSELECT)
     private Set<User> users = new HashSet<>();
 
     public void addUser(User user) {
