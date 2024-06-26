@@ -23,9 +23,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsers(String auth) {
+    public List<UserDto> getAllUsers() {
 
-        List<UserDtoFromSecondService> allUsers = firstServiceClient.getAllUsers(auth);
+        List<UserDtoFromSecondService> allUsers = firstServiceClient.getAllUsers();
 
         return allUsers.stream()
                 .map(userMapper::toUserDto)

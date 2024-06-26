@@ -17,7 +17,7 @@ public class HelloWorldController {
     }
 
     @GetMapping("/api/hello-world")
-    public String getHelloWorld(@RequestHeader() String auth) {
-        return "FirstService a calling: " + firstServiceClient.getHelloWorld(auth);
+    public String getHelloWorld() {
+        return "FirstService a calling: " + firstServiceClient.getHelloWorld();
     }
 }

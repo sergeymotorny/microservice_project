@@ -16,8 +16,9 @@ import java.util.List;
 public interface FirstServiceClient {
 
     @GetMapping("/api/hello-world")
-    String getHelloWorld(@RequestHeader() String auth);
+    String getHelloWorld();
 
     @GetMapping("/api/users")
-    List<UserDtoFromSecondService> getAllUsers(@RequestHeader() String auth);
+    List<UserDtoFromSecondService> getAllUsers();
+
 }
