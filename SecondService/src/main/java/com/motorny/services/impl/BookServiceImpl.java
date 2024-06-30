@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -65,7 +66,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<TitleBookViewDto> getAllBooksByUserId(Long id) {
+
         List<TitleBookView> allBooksByUserId = bookRepository.findAllBooksByUserId(id);
+
+        if (allBooksByUserId.isEmpty()) {
+            throw new UserNotFoundException("User with" + id + " was not found!");
+        }
 
         return allBooksByUserId.stream()
                 .map(bookMapper::toTitleBookViewDto)
