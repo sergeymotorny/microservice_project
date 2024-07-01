@@ -58,6 +58,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.delete(foundUser);
 
-        return "User with " + id + " successfully deleted!";
+        return "User with id '" + id + "' successfully deleted!";
     }
 }
