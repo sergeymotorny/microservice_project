@@ -1,10 +1,6 @@
 package com.motorny.controllers;
 
-import com.motorny.dto.BookDto;
-import com.motorny.dto.UserDto;
-import com.motorny.models.Book;
 import io.restassured.RestAssured;
-import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,13 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
@@ -71,7 +61,7 @@ class BookControllerTest {
     }
 
     @Test
-    void get_AllBooks_returnsTheFoundBook_200() {
+    void get_AllBooks_returnsFoundTitleBook() {
 
         given()
                 .header(HEADER_NAME, HEADER_VALUE)
@@ -83,7 +73,7 @@ class BookControllerTest {
     }
 
     @Test
-    void get_AllBooks_returnsAllBooks_200() {
+    void get_AllBooks_returnsAllBooks() {
 
         ValidatableResponse response = given()
                 .header(HEADER_NAME, HEADER_VALUE)
@@ -91,7 +81,7 @@ class BookControllerTest {
                 .get("/api/books")
                 .then();
 
-        System.out.println("'get_AllBooks_returnsAllBooks_200' response:\n" + response.extract().asString());
+        System.out.println("'get_AllBooks_returnsAllBooks' response:\n" + response.extract().asString());
 
         response
                 .assertThat()
@@ -102,21 +92,26 @@ class BookControllerTest {
     }
 
     @Test
-    void delete_book_returnsNotFound_404() {
+    void delete_book_returnsNotFound() {
+
+        int bookId = 100;
+
         given()
                 .header(HEADER_NAME, HEADER_VALUE)
                 .when()
-                .delete("/api/books/" + 100)
+                .delete("/api/books/" + bookId)
                 .then()
                 .assertThat()
-                .statusCode(NOT_FOUND.value());
+                .statusCode(NOT_FOUND.value())
+                .body("message", equalTo("Book with id '" + bookId + "' was not found!"));
     }
 
-
-    // ------- 1 query: /api/books/user/{userId}
+    /**
+     * Test case for checking the returned size of the user's list of books
+     */
 
     @Test
-    void theListSizeMatchesTheUsersBookCount() {
+    void theListSizeMatchesTheUsersBooksCount() {
 
         given()
                 .header(HEADER_NAME, HEADER_VALUE)
@@ -125,6 +120,10 @@ class BookControllerTest {
                 .then()
                 .body("size()", is(6));
     }
+
+    /**
+     * Test case for checking a specific book in query
+     */
 
     @Test
     void checkAvailability_ofTheRequiredBook() {
@@ -140,25 +139,32 @@ class BookControllerTest {
                 .body("title", hasItem("clean code 2023"));
     }
 
+    /**
+     * Test case of error handling in case of a non-existent user
+     */
+
     @Test
-    void receiveProcessing_whenTheUserDoesNotExist() {
+    void returnErrorMessage_whenUserDoesNotExist() {
+
+        int userId = 100;
 
         ValidatableResponse response = given()
                 .log().all()
                 .header(HEADER_NAME, HEADER_VALUE)
                 .when()
-                .get("/api/books/user/" + 100)
+                .get("/api/books/user/" + userId)
                 .then();
 
-        System.out.println("'receiveProcessing_whenTheUserDoesNotExist' response:\n" + response.extract().asString());
+        System.out.println("'returnErrorMessage_whenUserDoesNotExist' response:\n" + response.extract().asString());
 
         response.assertThat()
                 .statusCode(NOT_FOUND.value())
-                .body("error", equalTo("Not Found"));
+                .body("message", equalTo("User with id '" + userId + "' was not found!"));
     }
 
-
-    // ------- 2 query: /api/books/popular
+    /**
+     * Test case for checking the size of the returned query and the number of users less than 9 years old
+     */
 
     @Test
     void whenUseMultiplePathParam_thenOK() {
@@ -175,33 +181,22 @@ class BookControllerTest {
         System.out.println("'whenUseMultiplePathParam_thenOK' response:\n" + response.extract().asString());
 
         response.assertThat()
-                .statusCode(200)
+                .statusCode(OK.value())
                 .body("size()", is(3))
                 .body("age", not(empty())).body("findAll {it.age < 9}.size()", is(2));
     }
 
     @Test
-    void test_query2() {
+    void checkBookTitleByUserName() {
 
+        given()
+                .header(HEADER_NAME, HEADER_VALUE)
+                .queryParam("age", 9)
+                .queryParam("limit", 4)
+                .when()
+                .get("/api/books/popular")
+                .then()
+                .statusCode(OK.value())
+                .body("find {it.fullName == 'Katie Sierra'}.title", equalTo("clean code 2023"));
     }
-
-    void test_query3() {
-
-    }
-
-
-    // object mapping
-
-    @Test
-    void mappingObjects_fromBook_toBookMapper() {
-
-    }
-
-    @Test
-    void mappingObjects_fromBookMapper_toBook() {
-
-    }
-
-
-
 }
