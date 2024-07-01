@@ -2,11 +2,13 @@ package com.motorny.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.Set;
 
+@AllArgsConstructor
 @Data
 @Builder
 public class UserDto {
