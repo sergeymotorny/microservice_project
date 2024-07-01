@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -40,7 +39,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto createBook(BookDto bookDto, Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Unable to get user for book"));
+                .orElseThrow(() -> new UserNotFoundException("Unable to get user id '" + id + "' for book"));
 
         Book book = bookMapper.toBook(bookDto);
 
@@ -56,7 +55,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public String deleteBook(Long id) {
         Book foundBook = bookRepository.findById(id)
-                .orElseThrow(() -> new BookNotFoundException("Book with " + id + " was not found!"));
+                .orElseThrow(() -> new BookNotFoundException("Book with id '" + id + "' was not found!"));
 
         bookRepository.delete(foundBook);
 
@@ -70,7 +69,7 @@ public class BookServiceImpl implements BookService {
         List<TitleBookView> allBooksByUserId = bookRepository.findAllBooksByUserId(id);
 
         if (allBooksByUserId.isEmpty()) {
-            throw new UserNotFoundException("User with" + id + " was not found!");
+            throw new UserNotFoundException("User with id '" + id + "' was not found!");
         }
 
         return allBooksByUserId.stream()
@@ -83,6 +82,10 @@ public class BookServiceImpl implements BookService {
 
         List<PopularBookView> popularBooks =
                 bookRepository.mostPopularBooksForReadersUnderAge(age, limit);
+
+        if (popularBooks.isEmpty()) {
+            throw new BookNotFoundException("The list of books is empty, please enter the correct age and limit!");
+        }
 
         return popularBooks.stream()
                 .map(bookMapper::toPopularBookViewDto)

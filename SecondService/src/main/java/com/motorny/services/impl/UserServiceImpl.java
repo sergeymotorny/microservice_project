@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(UserDto userDto, Long id) {
         User foundUser = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User with " + id + " was not found!"));
+                .orElseThrow(() -> new UserNotFoundException("User with id '" + id + "' was not found!"));
 
         foundUser.setFullName(userDto.getFullName());
         foundUser.setAge(userDto.getAge());
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String deleteUser(Long id) {
         User foundUser = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User with " + id + " was not found!"));
+                .orElseThrow(() -> new UserNotFoundException("User with id '" + id + "' was not found!"));
 
         userRepository.delete(foundUser);
 
