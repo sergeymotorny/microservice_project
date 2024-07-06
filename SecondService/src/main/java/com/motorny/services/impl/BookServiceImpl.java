@@ -37,9 +37,9 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookDto createBook(BookDto bookDto, Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Unable to get user id '" + id + "' for book"));
+    public BookDto createBook(BookDto bookDto, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Unable to get user id '" + userId + "' for book"));
 
         Book book = bookMapper.toBook(bookDto);
 
@@ -56,6 +56,8 @@ public class BookServiceImpl implements BookService {
     public String deleteBook(Long id) {
         Book foundBook = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException("Book with id '" + id + "' was not found!"));
+
+        foundBook.removeUsers();
 
         bookRepository.delete(foundBook);
 

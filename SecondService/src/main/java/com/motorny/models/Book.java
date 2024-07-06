@@ -60,6 +60,7 @@ public class Book {
 
     @ManyToMany(mappedBy = "books")
     @Fetch(FetchMode.SUBSELECT)
+    @Builder.Default // Default initialization
     private Set<User> users = new HashSet<>();
 
     public void addUser(User user) {
@@ -70,6 +71,11 @@ public class Book {
     public void removeUser(User user) {
         this.users.remove(user);
         user.getBooks().remove(this);
+    }
+
+    public void removeUsers() {
+        Set<User> userCopy = new HashSet<>(users);
+        userCopy.forEach(this::removeUser);
     }
 
     @Override
