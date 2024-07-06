@@ -18,6 +18,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Rollback
 class UserControllerTest {
 
     private static final String HEADER_NAME = "auth";
@@ -49,9 +50,8 @@ class UserControllerTest {
                 .body("size()", is(5));
     }
 
-    @Rollback // RollBack transaction is not executed!
     @Test
-    void post_newBook_returnsCreatedBook() {
+    void post_newUser_returnsCreatedUser() {
         UserDto newUser = UserDto.builder()
                 .fullName("Craig Walls")
                 .age(8).build();
@@ -65,7 +65,7 @@ class UserControllerTest {
                 .post("/api/users")
                 .then();
 
-        System.out.println("'post_newBook_returnsCreatedBook' response:\n" + response.extract().asString());
+        System.out.println("'post_newUser_returnsCreatedUser' response:\n" + response.extract().asString());
 
         response.assertThat()
                 .statusCode(CREATED.value())
@@ -73,18 +73,17 @@ class UserControllerTest {
                 .body("age", equalTo(8));
     }
 
-    @Rollback // RollBack transaction is not executed!
     @Test
     void put_updateUser_returnsUpdatedUser() {
-        UserDto updateUser = UserDto.builder()
-                .fullName("Craig Walls")
-                .age(5).build();
+        UserDto updatedUser = UserDto.builder()
+                .fullName("Andrew Run")
+                .age(6).build();
 
         ValidatableResponse response = given()
                 .header(HEADER_NAME, HEADER_VALUE)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
-                .body(updateUser)
+                .body(updatedUser)
                 .when()
                 .put("/api/users/" + USER_ID)
                 .then();
@@ -97,7 +96,6 @@ class UserControllerTest {
                 .body("age", equalTo(6));
     }
 
-    @Rollback // RollBack transaction is not executed!
     @Test
     void delete_user_returnsOk() {
 

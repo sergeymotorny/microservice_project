@@ -1,17 +1,23 @@
 package com.motorny.controllers;
 
+import com.motorny.dto.BookDto;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -90,6 +96,39 @@ class BookControllerTest {
                 .body("id", not(empty())).body("findAll {it.pages > 500}.size()", is(10));
     }
 
+    @Rollback
+    @Test
+    void post_newBook_returnsCreatedBook() {
+        Set<Long> userId = new HashSet<>(List.of(6L));
+
+        BookDto newBook = BookDto.builder()
+                .title("Java Philosophy")
+                .pages(915)
+                .userId(userId).build();
+
+        ValidatableResponse response = given()
+                .header(HEADER_NAME, HEADER_VALUE)
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
+                .body(newBook)
+                .when()
+                .post("/api/books/" + 6)
+                .then();
+
+        System.out.println("'post_newBook_returnsCreatedBook' response:\n" + response.extract().asString());
+
+        List<Integer> userIdList = userId.stream()
+                .map(Long::intValue)
+                .toList();
+
+        response.assertThat()
+                .statusCode(CREATED.value())
+                .body("title", equalTo("Java Philosophy"))
+                .body("pages", equalTo(915))
+                .body("userId", not(emptyCollectionOf(Long.class)))
+                .body("userId", hasItems(userIdList.toArray()))
+                .body("userId", hasItem(6));
+    }
+
     @Test
     void delete_book_returnsNotFound() {
 
@@ -105,10 +144,6 @@ class BookControllerTest {
                 .body("message", equalTo("Book with id '" + bookId + "' was not found!"));
     }
 
-    /**
-     * Test case for checking the returned size of the user's list of books
-     */
-
     @Test
     void theListSizeMatchesTheUsersBooksCount() {
 
@@ -119,10 +154,6 @@ class BookControllerTest {
                 .then()
                 .body("size()", is(6));
     }
-
-    /**
-     * Test case for checking a specific book in query
-     */
 
     @Test
     void checkAvailability_ofTheRequiredBook() {
@@ -137,10 +168,6 @@ class BookControllerTest {
                 .statusCode(OK.value())
                 .body("title", hasItem("clean code 2023"));
     }
-
-    /**
-     * Test case of error handling in case of a non-existent user
-     */
 
     @Test
     void returnErrorMessage_whenUserDoesNotExist() {
@@ -160,10 +187,6 @@ class BookControllerTest {
                 .statusCode(NOT_FOUND.value())
                 .body("message", equalTo("User with id '" + userId + "' was not found!"));
     }
-
-    /**
-     * Test case for checking the size of the returned query and the number of users less than 9 years old
-     */
 
     @Test
     void whenUseMultiplePathParam_thenOK() {
