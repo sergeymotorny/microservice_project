@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BookService {
     List<BookDto> getAllBook();
-    BookDto createBook(BookDto bookDto, Long id);
+    BookDto createBook(BookDto bookDto, Long userId);
     String deleteBook(Long id);
     List<TitleBookViewDto> getAllBooksByUserId(Long id);
     List<PopularBookViewDto> getPopularBooksByAge(Integer age, Integer limit);
