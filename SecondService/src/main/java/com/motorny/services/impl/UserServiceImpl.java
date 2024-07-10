@@ -7,11 +7,17 @@ import com.motorny.models.User;
 import com.motorny.repositories.UserRepository;
 import com.motorny.services.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,8 +27,9 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
+    @Cacheable(value = "users")
     public List<UserDto> getAllUser() {
-
+        log.info("UserServiceImpl: getAllUser");
         return userRepository.findAll().stream()
                 .map(userMapper::toUserDto)
                 .toList();
@@ -30,7 +37,12 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = "users", allEntries = true),
+            @CacheEvict(value = "foundUser", allEntries = true)
+    })
     public UserDto createUser(UserDto userDto) {
+        log.info("UserServiceImpl: createUser, '{}'", userDto.getFullName());
         User user = userMapper.toUser(userDto);
         User savedUser = userRepository.save(user);
         return userMapper.toUserDto(savedUser);
