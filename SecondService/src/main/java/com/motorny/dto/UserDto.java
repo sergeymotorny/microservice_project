@@ -3,17 +3,17 @@ package com.motorny.dto;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @AllArgsConstructor
 @Data
 @Builder
-public class UserDto {
+public class UserDto implements Serializable {
 
     private Long id;
 
